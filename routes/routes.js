@@ -15,11 +15,11 @@ router.post('/login',  authController.admin_login_post);
 router.get('/logout', authController.admin_logout);
 
 /* Gaallery */
-router.post('/upload', galmiddle.upload.single('thumb'), galController.categoryUpload);
-router.get('/upload', galController.categoryGet);
-router.get('/upload/:id', galController.categoryGetOne);
-router.delete('/upload/:id', galController.categoryDel);
-router.patch('/upload/:id', galController.categoryUpdate);
+router.post('/category', galmiddle.upload.single('thumb'), galController.categoryUpload);
+router.get('/category', galController.categoryGet);
+router.get('/category/:id', galController.categoryGetOne);
+router.delete('/category/:id', galController.categoryDel);
+router.patch('/category/:id', galController.categoryUpdate);
 
 router.post('/all_projects', galmiddle.upload.any('pictures', 5), galController.projectUpload);
 router.get('/all_projects', galController.projectGet);
