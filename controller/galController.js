@@ -82,17 +82,11 @@ module.exports.categoryGetOne = async (req, res) => {
 }
 
 module.exports.projectGetOne = async (req, res) => {
-    if(ObjectId.isValid(req.params.id)){
-        db.collection('projects')
-        .findOne({_id: ObjectId(req.params.id)})
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'project not found '})
-        })        
-    } else{
-        res.status(500).json({error: 'not a valid project'})
+    try{
+        const allData = await GalProject.findById(req.params.id)
+        res.json(allData)
+    }catch(error) {
+        (console.log(error,"no a valid project"))
     }
 }
 
