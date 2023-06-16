@@ -33,6 +33,7 @@ module.exports.projectUpload = async (req, res) => {
         
         const proj = new GalProject({
             name:req.body.name,
+            category:req.body.category,
             thumb: urls[0].url,
             pictures: urls.map( url => ({url:url.url, id:url.public_id})),
             thumbId: urls[0].public_id
@@ -55,7 +56,12 @@ module.exports.categoryGet = async (req, res) => {
 }
 module.exports.projectGet = async (req, res) => {
     
-    const allData = await GalProject.find(/* {category:{$eq:}} */)
+    const allData = await GalProject.find()
+    res.json(allData)
+}
+module.exports.projectCat = async (req, res) => {
+    
+    const allData = await GalProject.find({category:req.params.category})
     res.json(allData)
 }
 
@@ -146,16 +152,16 @@ module.exports.categoryUpdate = async (req, res) => {
 module.exports.projectUpdate = async (req, res) => {
     try {
         let proj = await GalProject.findById(req.params.id);
-        await cloudinary.uploader.destroy(proj.thumbId);
-        const files = req.file;
-        const filePromises = files.map(file => cloudinary.uploader.upload(file.path)  )
-        const urls = await Promise.all(filePromises)
-        const data = {
+        console.log(proj,req)
+        /* await cloudinary.uploader.destroy(proj.thumbId);
+        const filePromises = await cloudinary.uploader.upload(req.files,{public_id:proj.pictures.url})
+        console.log(filePromises ) */
+        /* const data = {
             name:req.body.name,
-            pictures: urls.map( url => ({url:url.url, id:url.public_id}))
+            pictures: {url:url.url, id:url.public_id}
         }
         proj = await GalProject.updateOne({_id: ObjectId(req.params.id)},{$set: data});
-        res.json(proj)
+        res.json(proj) */
     } catch (error) {
         console.log(error)
     } 
