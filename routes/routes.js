@@ -21,7 +21,7 @@ router.get('/category/:id', galController.categoryGetOne);
 router.delete('/category/:id', galController.categoryDel);
 router.patch('/category/:id', galController.categoryUpdate);
 
-router.post('/all_projects', galmiddle.upload.any('pictures', 5), galController.projectUpload);
+router.post('/all_projects', galmiddle.upload.any('pictures', 12), galController.projectUpload);
 router.get('/all_projects', galController.projectGet);
 router.get('/all_projects/:category', galController.projectCat);
 router.get('/all_projects/:category/:id', galController.projectGetOne);
