@@ -93,19 +93,6 @@ module.exports.projectGetOne = async (req, res) => {
     }catch(error) {
         (console.log(error,"no a valid project"))
     }
-    
-/*     if(ObjectId.isValid(req.params.id)){
-        db.collection('projects')
-        .findOne(req.params.id)
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'project not found '})
-        })        
-    } else{
-        res.status(500).json({error: 'not a valid project'})
-    } */
 }
 
 /* deleting */
