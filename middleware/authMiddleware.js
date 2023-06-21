@@ -8,14 +8,14 @@ const requireAuth = (req, res, next) => {
     jwt.verify(token, 'net ninja secret', (err, decodedToken) => {
       if (err) {
         console.log(err.message);
-        res.redirect('/login');
+        return res.status(403).json({ error: 'Invalid token' });
       } else {
         console.log(decodedToken);
         next();
       }
     });
   } else {
-    res.redirect('/login');
+    return res.status(401).json({ error: 'Authentication token required' });
   }
 };
 

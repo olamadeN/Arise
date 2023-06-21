@@ -23,7 +23,7 @@ router.patch('/category/:id', galController.categoryUpdate);
 
 router.post('/all_projects', galmiddle.upload.any('pictures', 5), galController.projectUpload);
 router.get('/all_projects', galController.projectGet);
-router.get('/all_projects/:id', galController.projectCat);
+router.get('/all_projects/:category', galController.projectCat);
 router.get('/all_projects/:category/:id', galController.projectGetOne);
 router.delete('/all_projects/:id', galController.projectDel);
 router.patch('/all_projects/:id', galController.projectUpdate);

@@ -22,7 +22,6 @@ const upload = multer({
       cb({message:'Unsupported file format'}, false)
     }
   },
-  limits:{fieldSize:1024 * 1024}
 
 })
 

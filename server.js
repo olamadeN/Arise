@@ -7,7 +7,6 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { requireAuth } = require('./middleware/authMiddleware');
-const { Headers } = require('./middleware/admnHeader');
 
 //connecting database
 dotenv.config()
@@ -17,7 +16,7 @@ app.use(express.json())
 /* app.use(bodyParser.json({strict: false}));
 app.use(bodyParser.json()) */
 app.use(cors())
-app.use(Headers)
+
 
 
 

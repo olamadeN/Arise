@@ -5,19 +5,24 @@ const cloudinary = require('../middleware/cloudinary')
 const fs = require('fs');
 var path = require('path');
 const { db, findById } = require("../models/suSchema");
+const multer  = require('multer')
+const upload = multer({ dest: "images/" });
 
 
 /* Uploading */
 module.exports.categoryUpload = async (req,res) => {
     try {
-        const result = await cloudinary.uploader.upload(req.file.path)
+        const imageFile = req.file;
+        console.log(imageFile)
+        const result = await cloudinary.uploader.upload(imageFile.path)
         const obj = new GalCategory ({
         name: req.body.name,
         thumb: result.secure_url,
         cloudinaryId: result.public_id
         })
         await obj.save()
-        res.json (obj)
+        console.log('ot  here')
+        return res.status(200).json(obj)
     } catch(err){
         console.log(err, 'image not saved')
     }
@@ -82,9 +87,16 @@ module.exports.categoryGetOne = async (req, res) => {
 }
 
 module.exports.projectGetOne = async (req, res) => {
-    if(ObjectId.isValid(req.params.id)){
+    try{
+        const allData = await GalProject.findById(req.params.id)
+        res.json(allData)
+    }catch(error) {
+        (console.log(error,"no a valid project"))
+    }
+    
+/*     if(ObjectId.isValid(req.params.id)){
         db.collection('projects')
-        .findOne({_id: ObjectId(req.params.id)})
+        .findOne(req.params.id)
         .then(result => {
             res.status(200).json(result)
         })
@@ -93,13 +105,18 @@ module.exports.projectGetOne = async (req, res) => {
         })        
     } else{
         res.status(500).json({error: 'not a valid project'})
-    }
+    } */
 }
 
 /* deleting */
 module.exports.categoryDel = async (req, res) => {
     try{
         let cat = await GalCategory.findById(req.params.id);
+        const allData = await GalProject.find({category:req.params.category})
+        allData.map(async (data)=>{
+            await cloudinary.uploader.destroy(data.pictures.id)
+            data.remove()
+        }) 
         await cloudinary.uploader.destroy(cat.cloudinaryId);
         await cat.remove();
         res.json(cat);
@@ -153,15 +170,15 @@ module.exports.projectUpdate = async (req, res) => {
     try {
         let proj = await GalProject.findById(req.params.id);
         console.log(proj,req)
-        /* await cloudinary.uploader.destroy(proj.thumbId);
+        await cloudinary.uploader.destroy(proj.thumbId);
         const filePromises = await cloudinary.uploader.upload(req.files,{public_id:proj.pictures.url})
-        console.log(filePromises ) */
-        /* const data = {
+        console.log(filePromises )
+        const data = {
             name:req.body.name,
             pictures: {url:url.url, id:url.public_id}
         }
         proj = await GalProject.updateOne({_id: ObjectId(req.params.id)},{$set: data});
-        res.json(proj) */
+        res.json(proj)
     } catch (error) {
         console.log(error)
     } 

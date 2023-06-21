@@ -6,7 +6,7 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-exports.uploads = (file, folder) => {
+/* exports.uploads = (file, folder) => {
   return new Promise(resolve => {
       cloudinary.uploader.upload(file, ((result) => {
           resolve({
@@ -18,7 +18,7 @@ exports.uploads = (file, folder) => {
           folder: folder
       })).then()
   })
-}
+} */
 /* export async function handleUpload(file) {
   const res = await cloudinary.uploader.upload(file, {
     resource_type: "auto",

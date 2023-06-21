@@ -1,18 +1,12 @@
 
 const mongoose = require('mongoose');
-const { isEmail } = require('validator');
 const bcrypt =  require('bcrypt');
 const suTemplate = new mongoose.Schema({
-/*     fullName:{
+    userName:{
         type:String,
-        required:[true, 'Please enter your full name']
-    }, */
-    email:{
-        type:String,
-        required: [true, 'Please enter an email'],
-        unique: true,
+        required:[true, 'Please enter your full name'],
+        unique:true,
         lowercase: true,
-        validate: [isEmail, 'Please enter a valid email']
     },
     password:{
         type:String,
@@ -32,8 +26,8 @@ suTemplate.pre('save', async function(next) {
 })
 
 // static method to login user
-suTemplate.statics.login = async function(email, password) {
-    const user = await this.findOne({ email });
+suTemplate.statics.login = async function(userName, password) {
+    const user = await this.findOne({ userName });
     if (user) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
@@ -41,7 +35,7 @@ suTemplate.statics.login = async function(email, password) {
       }
       throw Error('incorrect password');
     }
-    throw Error('incorrect email');
+    throw Error('incorrect userName');
 };
 suTemplate.pre('save', function () {      
     if (this.isNew) {
