@@ -21,9 +21,9 @@ module.exports.categoryUpload = async (req,res) => {
         cloudinaryId: result.public_id
         })
         await obj.save()
-        console.log('ot  here')
-        return res.status(200).json(obj)
+        res.status(200).json(obj)
     } catch(err){
+        res.status(500)
         console.log(err, 'image not saved')
     }
 }
@@ -48,7 +48,8 @@ module.exports.projectUpload = async (req, res) => {
         await proj.save()
         res.status(200).json(proj) 
     } catch (error) {
-        console.log(error, 'opps')
+        res.status(500)
+        console.log(error, 'project not created')
     }
         
 }
@@ -93,6 +94,19 @@ module.exports.projectGetOne = async (req, res) => {
     }catch(error) {
         (console.log(error,"no a valid project"))
     }
+    
+/*     if(ObjectId.isValid(req.params.id)){
+        db.collection('projects')
+        .findOne(req.params.id)
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({error: 'project not found '})
+        })        
+    } else{
+        res.status(500).json({error: 'not a valid project'})
+    } */
 }
 
 /* deleting */
@@ -131,7 +145,7 @@ module.exports.projectDel = (req, res) => {
 }
 
 /* updating */
-module.exports.categoryUpdate = async (req, res) => {
+/* module.exports.categoryUpdate = async (req, res) => {
     
     if(ObjectId.isValid(req.params.id)){
         try {
@@ -169,5 +183,5 @@ module.exports.projectUpdate = async (req, res) => {
     } catch (error) {
         console.log(error)
     } 
-
-}
+ 
+}*/
