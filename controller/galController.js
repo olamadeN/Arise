@@ -143,14 +143,14 @@ module.exports.projectDel = (req, res) => {
     if(ObjectId.isValid(req.params.id)){
         let pro = GalProject.findById(req.params.id);
         const cloud = pro.pictures
+        console.log(cloud)
         cloud.map((cid)=>{
             cloudinary.uploader.destroy(cid.Id);
             cloudinary.log('cloudinary deleted')
         })
-        db.collection('projects')
-        .deleteOne({_id: ObjectId(req.params.id)})
-        .then(result => {
-            res.status(200).json(result)
+        pro.remove()
+        .then(res => {
+            res.status(200).json(res)
             console.log('project deleted')
         })
         .catch(err => {
