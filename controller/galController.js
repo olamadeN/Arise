@@ -139,25 +139,19 @@ module.exports.categoryDel = async (req, res) => {
     }
 
 }
-module.exports.projectDel = (req, res) => {
-    if(ObjectId.isValid(req.params.id)){
-        let pro = GalProject.findById(req.params.id);
-        const cloud = pro.pictures
-        console.log(cloud)
-        cloud.map((cid)=>{
-            cloudinary.uploader.destroy(cid.Id);
-            cloudinary.log('cloudinary deleted')
+module.exports.projectDel = async (req, res) => {
+    try{
+        const proj = await GalProject.findById(req.params.id);        
+        const cloud = proj.pictures                
+        cloud.map(async(cid) => {
+            await cloudinary.uploader.destroy(cid.Id);
+            console.log('cloudinary deleted');
         })
-        pro.remove()
-        .then(res => {
-            res.status(200).json(res)
-            console.log('project deleted')
-        })
-        .catch(err => {
-            res.status(500).json({error: 'could not delete'})
-        })        
-    } else{
-        res.status(500).json({error: 'not a valid project'})
+        await proj.remove()
+        await res.status(200).json(res)
+        console.log('project deleted')
+    }catch(err){
+        res.status(500).json({error: 'could not delete'})
     }
 
 }
