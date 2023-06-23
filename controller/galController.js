@@ -22,9 +22,10 @@ module.exports.categoryUpload = async (req,res) => {
         })
         await obj.save()
         res.status(200).json(obj)
+        console.log('category uploaded')
     } catch(err){
-        res.status(500)
-        console.log(err, 'image not saved')
+        res.status(500).json(err)
+        console.log(err, 'category not saved')
     }
 }
 module.exports.projectUpload = async (req, res) => {
@@ -40,15 +41,15 @@ module.exports.projectUpload = async (req, res) => {
             name:req.body.name,
             category:req.body.category,
             thumb: urls[0].url,
-            pictures: urls.map( url => ({url:url.url, id:url.public_id})),
+            pictures: urls.map( url => ({url:url.url, Id:url.public_id})),
             thumbId: urls[0].public_id
 
         })
-        console.log(proj, req.file)
+        console.log(proj,'project savd')
         await proj.save()
         res.status(200).json(proj) 
     } catch (error) {
-        res.status(500)
+        res.status(500).error
         console.log(error, 'project not created')
     }
         
@@ -111,16 +112,28 @@ module.exports.projectGetOne = async (req, res) => {
 
 /* deleting */
 module.exports.categoryDel = async (req, res) => {
-    try{
+    try{        
         let cat = await GalCategory.findById(req.params.id);
-        const allData = await GalProject.find({category:req.params.category})
-        allData.map(async (data)=>{
+        const allData = await GalProject.find({category:req.query.param})
+        console.log(allData)
+        allData.map(async(objs) => {
+            const pic = objs.pictures
+            console.log(pic) 
+            pic.map(async (array) => {
+                await cloudinary.uploader.destroy(array.Id)
+                console.log('cloudinary deleted')                
+            });
+            await objs.remove()
+        })
+/*         allData.map(async (data)=>{
             await cloudinary.uploader.destroy(data.pictures.id)
-            data.remove()
-        }) 
+            console.log('cloudinary deleted')
+            await data.remove()
+        })  */
         await cloudinary.uploader.destroy(cat.cloudinaryId);
         await cat.remove();
-        res.json(cat);
+        res.status(200);
+        console.log('category Deleted')
     } catch (err){
         console.log(err)
     }
@@ -129,11 +142,16 @@ module.exports.categoryDel = async (req, res) => {
 module.exports.projectDel = (req, res) => {
     if(ObjectId.isValid(req.params.id)){
         let pro = GalProject.findById(req.params.id);
-        cloudinary.uploader.destroy(pro.thumbId);
+        const cloud = pro.pictures
+        cloud.map((cid)=>{
+            cloudinary.uploader.destroy(cid.Id);
+            cloudinary.log('cloudinary deleted')
+        })
         db.collection('projects')
         .deleteOne({_id: ObjectId(req.params.id)})
         .then(result => {
             res.status(200).json(result)
+            console.log('project deleted')
         })
         .catch(err => {
             res.status(500).json({error: 'could not delete'})
